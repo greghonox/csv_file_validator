@@ -8,6 +8,7 @@ from csv_file_validator.config import Config
 from csv_file_validator.exceptions import InvalidConfigException
 from csv_file_validator.file import File
 from csv_file_validator.validation_functions import execute_mapped_validation_function
+from csv_file_validator.validation_functions import execute_mapped_defining_validation_function
 
 
 def validate_file(file_validations: dict, file: File) -> int:
@@ -92,7 +93,7 @@ def validate_line_values(column_validations: dict, line: dict, idx: int) -> int:
         if column_name in column_validations:
             # looping through validation items
             for validation, validation_value in column_validations[column_name].items():
-                column_validations_fail_count += execute_mapped_validation_function(
+                ret_value = execute_mapped_defining_validation_function(
                     validation,
                     **{
                         "column": column_name,
@@ -101,5 +102,19 @@ def validate_line_values(column_validations: dict, line: dict, idx: int) -> int:
                         "row_number": idx,
                     },
                 )
+                if ret_value == 2:
+                    column_validations_fail_count += execute_mapped_validation_function(
+                        validation,
+                        **{
+                            "column": column_name,
+                            "validation_value": validation_value,
+                            "column_value": column_value,
+                            "row_number": idx,
+                        },
+                    )
+                elif ret_value == 1:
+                    column_validations_fail_count += 1
+                elif ret_value == 0:
+                    break
 
     return column_validations_fail_count

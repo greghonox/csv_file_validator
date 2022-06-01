@@ -68,7 +68,7 @@ def logging_decorator(func):
         except Exception as exc:
             raise RuntimeError(f"Unexpected Exception {exc} in {func.__name__}")
 
-        if validation_result != 0:
+        if validation_result > 0:
             _log_validation_error(func_name=func.__name__, **kwargs)
 
         return validation_result
@@ -207,13 +207,13 @@ def check_column_allow_float_value_range(**kwargs) -> int:
     :return:
     """
     lower_range: Decimal = Decimal(kwargs.get("validation_value")[0]).quantize(
-        Decimal(".01"), rounding=ROUND_HALF_EVEN
+        Decimal(".01"), rounding = ROUND_HALF_EVEN
     )
     upper_range: Decimal = Decimal(kwargs.get("validation_value")[1]).quantize(
-        Decimal(".01"), rounding=ROUND_HALF_EVEN
+        Decimal(".01"), rounding = ROUND_HALF_EVEN
     )
     column_value: Decimal = Decimal(kwargs.get("column_value")).quantize(
-        Decimal(".01"), rounding=ROUND_HALF_EVEN
+        Decimal(".01"), rounding = ROUND_HALF_EVEN
     )
 
     if lower_range.compare(column_value) < 0 < upper_range.compare(column_value):
@@ -269,6 +269,47 @@ def check_column_allow_regex(**kwargs) -> int:
     return 1
 
 
+@logging_decorator
+def check_column_allow_unique_value(**kwargs) -> int:
+    """
+    validation function checking if column value is unique in the file.
+    :param kwargs:
+    :return:
+    """
+    field_name = kwargs.get("column")
+
+    if field_name in _UNIQUE_VALUE_FIELD_MAP:
+        field_value_set = _UNIQUE_VALUE_FIELD_MAP[field_name]
+    else:
+        _UNIQUE_VALUE_FIELD_MAP[field_name] = field_value_set = set()
+
+    if kwargs.get("column_value") in field_value_set:
+        return 1
+    else:
+        field_value_set.add(kwargs.get("column_value"))
+
+    return 0
+
+
+@logging_decorator
+def check_column_allow_null_value(**kwargs) -> int:
+    """
+    validation function checking if column value is null.
+    :param kwargs:
+    :return:
+    """
+    return_value = -1
+
+    if kwargs.get("validation_value"):
+        if not kwargs.get("column_value"):
+            return_value = 0
+    else:
+        if not kwargs.get("column_value"):
+            return_value = 1
+
+    return return_value
+
+
 def execute_mapped_validation_function(attribute, **kwargs):
     """
     mapping method between config rules and validation functions
@@ -276,15 +317,37 @@ def execute_mapped_validation_function(attribute, **kwargs):
     :param kwargs:
     :return:
     """
-    for func_name, func in _ATTRIBUTE_FUNC_MAP.items():
-        if func_name == attribute:
-            return_value: Optional[Union[str, bool]] = func(**kwargs)
-            break
+    if attribute in _ATTRIBUTE_FUNC_MAP.keys():
+        func = _ATTRIBUTE_FUNC_MAP[attribute]
+        return_value: Optional[Union[str, int]] = func(**kwargs)
     else:
         raise InvalidConfigException(
             f"function {attribute} not found in " f"function_caller attribute_func_map"
         )
+
     return return_value
+
+
+def execute_mapped_defining_validation_function(attribute, **kwargs):
+    """
+    mapping method between config rules and validation functions
+    :param attribute:
+    :param kwargs:
+    :return:
+    """
+
+    return_value = 2
+
+    if attribute in _DEFINING_ATTRIBUTE_FUNC_MAP.keys():
+        func = _DEFINING_ATTRIBUTE_FUNC_MAP[attribute]
+        return_value: Optional[Union[str, int]] = func(**kwargs)
+
+    return return_value
+
+
+_DEFINING_ATTRIBUTE_FUNC_MAP: dict = {
+    "allow_null_value": check_column_allow_null_value,
+}
 
 
 _ATTRIBUTE_FUNC_MAP: dict = {
@@ -300,4 +363,8 @@ _ATTRIBUTE_FUNC_MAP: dict = {
     "allow_regex": check_column_allow_regex,
     "allow_substring": check_column_allow_substring,
     "allow_fixed_value": check_column_allow_fixed_value,
+    "allow_unique_value": check_column_allow_unique_value,
 }
+
+
+_UNIQUE_VALUE_FIELD_MAP: dict = {}
