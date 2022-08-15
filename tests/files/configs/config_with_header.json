@@ -3,7 +3,7 @@
     "file_value_separator": ",",
     "file_row_terminator": "\n",
     "file_value_quote_char": "\"",
-    "file_has_header": true
+    "file_has_header": false
   },
   "file_validation_rules": {
     "file_name_file_mask": ".+\\d+",

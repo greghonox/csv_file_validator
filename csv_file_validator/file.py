@@ -29,9 +29,9 @@ def construct_csv_file_properties(config: Config) -> CsvFileProperties:
     :return:
     """
     return CsvFileProperties(
-        file_row_terminator=config.file_metadata.file_row_terminator,
-        file_value_separator=config.file_metadata.file_value_separator,
-        file_value_quote_char=config.file_metadata.file_value_quote_char,
+        file_row_terminator=config.file_metadata.row_terminator,
+        file_value_separator=config.file_metadata.value_separator,
+        file_value_quote_char=config.file_metadata.value_quote_char,
     )
 
 

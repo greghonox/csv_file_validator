@@ -11,10 +11,12 @@ class FileMetadata:
     """
     file metadata class
     """
-
-    file_value_separator: str
-    file_value_quote_char: str
-    file_row_terminator: str
+    file_type: str
+    layouts_indicator_field: str
+    layouts_map: dict
+    value_separator: str
+    value_quote_char: str
+    row_terminator: str
     file_has_header: bool
 
 
@@ -33,12 +35,17 @@ class Config:
         if any(
             x is not str
             for x in [
-                type(self.file_metadata.file_value_separator),
-                type(self.file_metadata.file_value_quote_char),
-                type(self.file_metadata.file_row_terminator),
+                type(self.file_metadata.value_separator),
+                type(self.file_metadata.value_quote_char),
+                type(self.file_metadata.row_terminator),
+                type(self.file_metadata.file_type),
             ]
         ):
             raise ValueError
+
+        if type(self.file_metadata.layouts_map) is not dict:
+            raise ValueError
+
         if type(self.file_metadata.file_has_header) is not bool:
             raise ValueError
 
@@ -76,3 +83,9 @@ def get_validated_config(config: dict) -> Config:
         return Config(**config)
     except (ValueError, TypeError) as config_err:
         raise InvalidConfigException(config_err)
+
+
+_ALLOWED_FILE_TYPES: list = [
+    "csv_single_row_layout",
+    "csv_multi_row_layouts"
+]
