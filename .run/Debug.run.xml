@@ -13,7 +13,7 @@
     <option name="ADD_SOURCE_ROOTS" value="true" />
     <EXTENSION ID="PythonCoverageRunConfigurationExtension" runner="coverage.py" />
     <option name="SCRIPT_NAME" value="$PROJECT_DIR$/csv_file_validator" />
-    <option name="PARAMETERS" value="-cfg &quot;$PROJECT_DIR$/tests/files/configs/config_with_header.json&quot; -fl &quot;$PROJECT_DIR$/tests/files/csv/without_header/SalesJan2009_without_header_correct_file.csv&quot;" />
+    <option name="PARAMETERS" value="-cfg &quot;$PROJECT_DIR$/tests/files/configs/config_without_header.json&quot; -fl &quot;$PROJECT_DIR$/tests/files/csv/without_header/SalesJan2009_without_header_correct_file.csv&quot;" />
     <option name="SHOW_COMMAND_LINE" value="false" />
     <option name="EMULATE_TERMINAL" value="true" />
     <option name="MODULE_MODE" value="false" />

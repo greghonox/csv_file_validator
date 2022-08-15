@@ -4,11 +4,11 @@ validation module
 
 from typing import List
 
-from csv_file_validator.config import Config
-from csv_file_validator.exceptions import InvalidConfigException
-from csv_file_validator.file import File
-from csv_file_validator.validation_functions import execute_mapped_validation_function
-from csv_file_validator.validation_functions import execute_mapped_defining_validation_function
+from config import Config
+from exceptions import InvalidConfigException
+from file import File
+from validation_functions import execute_mapped_validation_function
+from validation_functions import execute_mapped_defining_validation_function
 
 
 def validate_file(file_validations: dict, file: File) -> int:

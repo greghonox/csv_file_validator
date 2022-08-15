@@ -3,7 +3,7 @@ config.py
 """
 from dataclasses import dataclass
 
-from csv_file_validator.exceptions import InvalidConfigException
+from exceptions import InvalidConfigException
 
 
 @dataclass
@@ -11,9 +11,6 @@ class FileMetadata:
     """
     file metadata class
     """
-    file_type: str
-    layouts_indicator_field: str
-    layouts_map: dict
     value_separator: str
     value_quote_char: str
     row_terminator: str
@@ -38,12 +35,8 @@ class Config:
                 type(self.file_metadata.value_separator),
                 type(self.file_metadata.value_quote_char),
                 type(self.file_metadata.row_terminator),
-                type(self.file_metadata.file_type),
             ]
         ):
-            raise ValueError
-
-        if type(self.file_metadata.layouts_map) is not dict:
             raise ValueError
 
         if type(self.file_metadata.file_has_header) is not bool:

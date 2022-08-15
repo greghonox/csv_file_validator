@@ -11,7 +11,7 @@ from typing import Optional, Union
 
 from dateutil import parser
 
-from csv_file_validator.exceptions import InvalidConfigException
+from exceptions import InvalidConfigException
 
 LOGGER = logging.getLogger(__name__)
 

@@ -7,8 +7,8 @@ from collections.abc import Generator
 from dataclasses import dataclass
 from typing import List, Optional
 
-from csv_file_validator.config import Config
-from csv_file_validator.exceptions import InvalidLineColumnCountException
+from config import Config
+from exceptions import InvalidLineColumnCountException
 
 
 @dataclass

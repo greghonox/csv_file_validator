@@ -5,7 +5,7 @@ import json
 import os
 from argparse import ArgumentParser
 
-from csv_file_validator.exceptions import (
+from exceptions import (
     InvalidFileLocationException,
     InvalidConfigException,
 )

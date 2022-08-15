@@ -5,9 +5,9 @@ import logging
 from enum import Enum
 from typing import List, Optional
 
-from csv_file_validator.argument_parser import prepare_args
-from csv_file_validator.config import get_validated_config, Config
-from csv_file_validator.exceptions import (
+from argument_parser import prepare_args
+from config import get_validated_config, Config
+from exceptions import (
     InvalidConfigException,
     InvalidLineColumnCountException,
     FoundValidationErrorException,
@@ -15,9 +15,9 @@ from csv_file_validator.exceptions import (
     InvalidSettingsException,
     InvalidFileLocationException,
 )
-from csv_file_validator.file import File
-from csv_file_validator.settings_parser import prepare_settings, Settings
-from csv_file_validator.validation import (
+from file import File
+from settings_parser import prepare_settings, Settings
+from validation import (
     validate_file,
     check_column_validation_rules_align_with_file_content,
     validate_line_values,

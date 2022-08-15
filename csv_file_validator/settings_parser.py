@@ -4,7 +4,7 @@ settings parser
 from configparser import ConfigParser
 from dataclasses import dataclass
 
-from csv_file_validator.exceptions import InvalidSettingsException
+from exceptions import InvalidSettingsException
 
 
 @dataclass
