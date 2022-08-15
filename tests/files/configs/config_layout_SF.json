@@ -1,8 +1,8 @@
 {
   "file_metadata": {
-    "file_value_separator": "|",
-    "file_row_terminator": "\n",
-    "file_value_quote_char": "\"",
+    "value_separator": "|",
+    "row_terminator": "\n",
+    "value_quote_char": "\"",
     "file_has_header": false
   },
   "file_validation_rules": {
