@@ -1,6 +1,7 @@
 """
 settings parser
 """
+import sys
 from configparser import ConfigParser
 from dataclasses import dataclass
 
@@ -26,7 +27,7 @@ def prepare_settings(settings_file_loc="settings.conf") -> Settings:
     settings: dict = dict()
 
     parser: ConfigParser = ConfigParser()
-    parser.read(settings_file_loc)
+    parser.read(sys.path[0]+'/'+settings_file_loc)
 
     if not parser.has_section("project_scoped_settings"):
         raise InvalidSettingsException(
