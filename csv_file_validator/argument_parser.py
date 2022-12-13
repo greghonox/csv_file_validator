@@ -12,8 +12,8 @@ from exceptions import (
 )
 
 
-def parse_file_loc(file_loc) -> List:
-    parsed_file_loc_list = []
+def parse_file_loc(file_loc) -> str:
+    parsed_file_loc_list: str = ''
     if os.path.isdir(file_loc):
         for path in os.listdir(file_loc):
             full_path = os.path.join(file_loc, path)
@@ -23,7 +23,7 @@ def parse_file_loc(file_loc) -> List:
             raise InvalidFileLocationException(f"Folder {file_loc} is empty")
 
     elif os.path.isfile(file_loc):
-        parsed_file_loc_list = [file_loc]
+        parsed_file_loc_list = file_loc
     else:
         raise InvalidFileLocationException(
             f"Could not load file(s) {file_loc} " f"for validation"
@@ -58,14 +58,17 @@ def prepare_args() -> dict:
     args = dict()
 
     parser = ArgumentParser()
-    parser.add_argument("-fl", "--filelocation", type=str, required=True)
-    parser.add_argument("-cfg", "--configfile", type=str, required=True)
+    parser.add_argument('-fl', '--filelocation', type=str, required=True)
+    parser.add_argument('-cfg', '--configfile', type=str, required=True)
+    parser.add_argument('-vl', '--validate', type=str, required=False)
     parsed = parser.parse_args()
 
     parsed_file_loc = parsed.filelocation
     parsed_config = parsed.configfile
+    validate = parsed.validate
     
-    args["file_loc"]: List = parse_file_loc(parsed_file_loc)
-    args["config"]: List = parse_config(parsed_config)
+    args['file_loc']: List = parse_file_loc(parsed_file_loc)
+    args['config']: List = parse_config(parsed_config)
+    args['validate']: str = validate
 
     return args

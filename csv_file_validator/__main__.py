@@ -37,11 +37,13 @@ class ValidationResultEnum(Enum):
 
 class ValidationResultItem:
     def __init__(self, file_name: str, result: ValidationResultEnum):
+        self.columns: Optional = []
         self.file_name: str = file_name
         self.result: ValidationResultEnum = result
 
     def __repr__(self):
-        return f"{self.file_name} -> {self.result.name}"
+        errors = ':' + ', '.join(self.columns)
+        return f"{self.file_name} -> {self.result.name}{errors}"
 
 
 def process_file_validations(config: Config, settings: Settings, file: File) -> None:
@@ -238,7 +240,7 @@ def main() -> Optional[List[ValidationResultItem]]:
 
     validation_results: List[ValidationResultItem] = []
 
-    for file_name in prepared_args["file_loc"]:
+    for file_name in [prepared_args["file_loc"]]:
         validation_result_item: ValidationResultItem = ValidationResultItem(
             file_name=file_name,
             result=process_file(config=config, settings=settings, file_name=file_name),

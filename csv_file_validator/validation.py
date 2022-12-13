@@ -11,7 +11,8 @@ from validation_functions import execute_mapped_validation_function
 from validation_functions import execute_mapped_defining_validation_function
 
 
-def validate_file(file_validations: dict, file: File) -> int:
+def validate_file(file_validations: dict, file: File,
+                  result: list = []) -> int:
     """
     function for validating a file, for every file validation, call
     the mapped validation function and process it
@@ -22,6 +23,7 @@ def validate_file(file_validations: dict, file: File) -> int:
     for validation, validation_value in file_validations.items():
         file_validations_fail_count += execute_mapped_validation_function(
             validation,
+            result,
             **{
                 "file_name": file.file_name,
                 "file_header": file.file_header,
@@ -35,7 +37,7 @@ def validate_file(file_validations: dict, file: File) -> int:
 
 
 def check_column_validation_rules_align_with_file_content(
-    config: Config, file: File
+    config: Config, file: File, result: list=[]
 ) -> None:
     """
     function checking column validation rules align with the file content
@@ -66,18 +68,16 @@ def check_column_validation_rules_align_with_file_content(
             "Column validations set in the config, "
             "but none of the expected columns found in the file"
         )
-
-    if not all(
-        item in column_identifiers_in_file
-        for item in column_validation_rules_names_in_config
-    ):
-        raise InvalidConfigException(
-            "Column validations set in the config, "
-            "but not all expected columns found in the file"
-        )
+    columns = [(item in column_identifiers_in_file, item) \
+        for item in column_validation_rules_names_in_config]
+    if not all( column[0] for column in columns):
+        msg = "Column validations set in the config, " \
+        "but not all expected columns found in the file"
+        result.append(msg)
+        raise InvalidConfigException(msg)
 
 
-def validate_line_values(column_validations: dict, line: dict, idx: int) -> int:
+def validate_line_values(column_validations: dict, line: dict, idx: int, result: list=[]) -> int:
     """
     function for validating a line in a file, for every column validation, call
     the mapped validation function and process it
@@ -95,6 +95,7 @@ def validate_line_values(column_validations: dict, line: dict, idx: int) -> int:
             for validation, validation_value in column_validations[column_name].items():
                 ret_value = execute_mapped_defining_validation_function(
                     validation,
+                    result,
                     **{
                         "column": column_name,
                         "validation_value": validation_value,
@@ -105,6 +106,7 @@ def validate_line_values(column_validations: dict, line: dict, idx: int) -> int:
                 if ret_value == 2:
                     column_validations_fail_count += execute_mapped_validation_function(
                         validation,
+                        result,
                         **{
                             "column": column_name,
                             "validation_value": validation_value,

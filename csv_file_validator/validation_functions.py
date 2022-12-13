@@ -310,7 +310,7 @@ def check_column_allow_null_value(**kwargs) -> int:
     return return_value
 
 
-def execute_mapped_validation_function(attribute, **kwargs):
+def execute_mapped_validation_function(attribute, result=[], **kwargs):
     """
     mapping method between config rules and validation functions
     :param attribute:
@@ -321,14 +321,16 @@ def execute_mapped_validation_function(attribute, **kwargs):
         func = _ATTRIBUTE_FUNC_MAP[attribute]
         return_value: Optional[Union[str, int]] = func(**kwargs)
     else:
+        msg = f"function {attribute} not found in " f"function_caller attribute_func_map"
+        result.append(msg)
         raise InvalidConfigException(
-            f"function {attribute} not found in " f"function_caller attribute_func_map"
+            msg
         )
 
     return return_value
 
 
-def execute_mapped_defining_validation_function(attribute, **kwargs):
+def execute_mapped_defining_validation_function(attribute, result: list=[], **kwargs):
     """
     mapping method between config rules and validation functions
     :param attribute:
