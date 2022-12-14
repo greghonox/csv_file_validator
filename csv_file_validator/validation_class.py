@@ -1,7 +1,6 @@
 import logging
 from file import File
 from enum import Enum
-from argument_parser import prepare_args
 from config import Config, get_validated_config
 from typing import List, Optional
 from abc import ABC, abstractmethod
@@ -15,6 +14,7 @@ from exceptions import (
     InvalidSettingsException,
     InvalidFileLocationException,
 )
+from argument_parser import prepare_args
 
 
 LOGGING_LEVEL = logging.DEBUG
@@ -27,7 +27,6 @@ class ValidationResultEnum(Enum):
     SUCCESS: int = 0
     FAILURE: int = 1
     COULD_NOT_PROCESS: int = 2
-    content_error: list = []
 
 
 class ValidationBase(ABC):
@@ -176,10 +175,16 @@ class ValidationGeneral(ValidationBase):
 
 
 class Factory:
-    def __init__(self, config: str, file_loc: str, validate: str) -> None:
-        self.config: str = config
-        self.file_loc: str = file_loc
-        self.validate: str = validate
+    """
+        1. Validar a entrada do validador.
+        2. Fazer testes unitários.
+        3. 
+    """
+    def __init__(self) -> None:
+        prepared_args: dict = prepare_args()
+        self.config: str = prepared_args['config']
+        self.file_loc: str = prepared_args['file_loc']
+        self.validate: str = prepared_args['validate']
         self.validation: dict = {}
     
     def execute(self) -> ValidationBase.execute_validation:
